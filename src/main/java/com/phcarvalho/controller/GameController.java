@@ -5,6 +5,7 @@ import com.phcarvalho.model.communication.protocol.vo.command.AddGameCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand;
 import com.phcarvalho.model.configuration.entity.Game;
+import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.GameView;
 
@@ -20,7 +21,7 @@ public class GameController {
         view.getList().setModel(model.getList());
     }
 
-    public void add(AddGameCommand addGameCommand) {
+    public void add(AddGameCommand addGameCommand) throws ConnectionException {
         model.add(addGameCommand);
     }
 
@@ -32,7 +33,7 @@ public class GameController {
         view.enableFlagAsReady();
     }
 
-    public void select(AddPlayerCommand addPlayerCommand) {
+    public void select(AddPlayerCommand addPlayerCommand) throws ConnectionException {
         model.select(addPlayerCommand);
     }
 
@@ -40,7 +41,7 @@ public class GameController {
         view.selectByCallback(player, game);
     }
 
-    public void flagAsReady() {
+    public void flagAsReady() throws ConnectionException {
         model.flagAsReady();
     }
 

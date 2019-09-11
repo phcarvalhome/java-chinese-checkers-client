@@ -1,14 +1,13 @@
 package com.phcarvalho.model.communication.connection.socket;
 
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.ConnectedPlayerModel;
-import com.phcarvalho.model.GameModel;
-import com.phcarvalho.model.MenuModel;
+import com.phcarvalho.model.MainModel;
 import com.phcarvalho.model.communication.commandtemplate.local.socket.CommandInvoker;
 import com.phcarvalho.model.communication.connection.IConnectionHandlerStrategy;
 import com.phcarvalho.model.communication.protocol.vo.RemoteEvent;
 import com.phcarvalho.model.communication.protocol.vo.command.ICommand;
 import com.phcarvalho.model.configuration.entity.User;
+import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.util.LogUtil;
 import com.phcarvalho.view.util.DialogUtil;
 
@@ -21,9 +20,8 @@ import java.util.concurrent.Executors;
 public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
 
     private static final String SERVER_CONNECTION = "Server Connection";
-    private static final String IO_STREAM_OPENING = "I/O Stream Opening";
-    private static final String INPUT_STREAMING_PROCESSING = "Input Stream Processing";
-    private static final String OUTPUT_STREAM_PROCESSING = "Remote Event Sending";
+    public static final String RECEIVE_REMOTE_COMMAND = "Receive Remote Command";
+    public static final String SEND_REMOTE_COMMAND = "Send Remote Command";
     private static final String SOCKET_CLOSING = "Socket Closing";
     private static final String INPUT_STREAM_CLOSING = "Input Stream Closing";
     private static final String OUTPUT_STREAM_CLOSING = "Output Stream Closing";
@@ -37,49 +35,34 @@ public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
 
     private DialogUtil dialogUtil;
 
-    private MenuModel menuModel;
-    private GameModel gameModel;
-    private ConnectedPlayerModel connectedPlayerModel;
+    private MainModel mainModel;
 
     public SocketHandlerStrategy() {
         dialogUtil = DependencyFactory.getSingleton().get(DialogUtil.class);
     }
 
     @Override
-    public void connectToServer(String host, Integer port, String userName){
+    public void connectToServer(String host, Integer port, String userName) throws ConnectionException {
 
-        if((socket != null) && (socket.isConnected())){
-            dialogUtil.showInformation("The server is already connected!", SERVER_CONNECTION);
-
-            return;
-        }
+        if((socket != null) && (socket.isConnected()))
+            throw new ConnectionException("The server is already connected!", SERVER_CONNECTION);
 
         try {
             socket = new Socket(host, port);
-            dialogUtil.showInformation("The server is connected!", SERVER_CONNECTION);
-            buildObjectIOStream();
-            setLocalUser(userName);
-            waitRemoteEvent();
-        } catch (IOException e) {
-            dialogUtil.showError("Error in the server connection!", SERVER_CONNECTION, e);
-            closeResources();
-        }
-    }
-
-    public void buildObjectIOStream(){
-
-        try {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
+            connectToServerByCallback(userName);
+            waitRemoteEvent();
         } catch (IOException e) {
-            dialogUtil.showError("Error in the I/O stream opening!", IO_STREAM_OPENING, e);
             closeResources();
+
+            throw new ConnectionException("Error in the server connection!", e, SERVER_CONNECTION);
         }
     }
 
-    private void setLocalUser(String userName) {
+    private void connectToServerByCallback(String userName) {
         localUser = User.of(userName, socket.getLocalAddress().getHostName(), socket.getLocalPort());
-        menuModel.setLocalUser(localUser);
+        mainModel.connectToServerByCallback(localUser);
     }
 
     private void waitRemoteEvent() {
@@ -93,10 +76,8 @@ public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
 
                     commandInvoker.execute(remoteEvent);
                 } catch (IOException | ClassNotFoundException e) {
-                    dialogUtil.showError("Error in the input stream processing!", INPUT_STREAMING_PROCESSING, e);
-                    menuModel.clear();
-                    gameModel.clear();
-                    connectedPlayerModel.clear();
+                    dialogUtil.showError("Error in the remote command receiving!", RECEIVE_REMOTE_COMMAND, e);
+                    mainModel.clear();
                     closeResources();
 
                     return;
@@ -127,10 +108,10 @@ public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
     }
 
     @Override
-    public void send(ICommand command) {
+    public void send(ICommand command) throws ConnectionException {
 
         if((socket == null) || (!socket.isConnected()))
-            dialogUtil.showError("The server is not connected!", SERVER_CONNECTION);
+            throw new ConnectionException("The server is not connected!", SERVER_CONNECTION);
 
         try {
             RemoteEvent remoteEvent = new RemoteEvent(command);
@@ -139,8 +120,9 @@ public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
             objectOutputStream.reset();
             LogUtil.logInformation(remoteEvent.toString(), REMOTE_EVENT_SENT);
         } catch (IOException e) {
-            dialogUtil.showError("Error in the output stream processing!", OUTPUT_STREAM_PROCESSING, e);
             closeResources();
+
+            throw new ConnectionException("Error in the remote command sending!", e, SEND_REMOTE_COMMAND);
         }
     }
 
@@ -150,17 +132,7 @@ public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
     }
 
     @Override
-    public void setMenuModel(MenuModel menuModel) {
-        this.menuModel = menuModel;
-    }
-
-    @Override
-    public void setGameModel(GameModel gameModel) {
-        this.gameModel = gameModel;
-    }
-
-    @Override
-    public void setConnectedPlayerModel(ConnectedPlayerModel connectedPlayerModel) {
-        this.connectedPlayerModel = connectedPlayerModel;
+    public void setMainModel(MainModel mainModel) {
+        this.mainModel = mainModel;
     }
 }

@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class User implements Serializable {
 
-    private static final String SERVER = "SERVER";
+    public static final String SERVER = "SERVER";
 
     private String name;
     private String host;

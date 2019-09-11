@@ -6,6 +6,7 @@ import com.phcarvalho.model.communication.connection.IConnectionHandlerStrategy;
 import com.phcarvalho.model.communication.protocol.vo.command.MovePieceCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.NotifyVictoryCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.NotifyWithdrawalCommand;
+import com.phcarvalho.model.exception.ConnectionException;
 
 public class BoardRemoteCommandTemplate implements IBoardRemoteCommandTemplate {
 
@@ -16,17 +17,17 @@ public class BoardRemoteCommandTemplate implements IBoardRemoteCommandTemplate {
     }
 
     @Override
-    public void notifyVictory(NotifyVictoryCommand notifyVictoryCommand){
+    public void notifyVictory(NotifyVictoryCommand notifyVictoryCommand) throws ConnectionException {
         connectionHandlerStrategy.send(notifyVictoryCommand);
     }
 
     @Override
-    public void notifyWithdrawal(NotifyWithdrawalCommand notifyWithdrawalCommand){
+    public void notifyWithdrawal(NotifyWithdrawalCommand notifyWithdrawalCommand) throws ConnectionException {
         connectionHandlerStrategy.send(notifyWithdrawalCommand);
     }
 
     @Override
-    public void movePiece(MovePieceCommand movePieceCommand){
+    public void movePiece(MovePieceCommand movePieceCommand) throws ConnectionException {
         connectionHandlerStrategy.send(movePieceCommand);
     }
 }

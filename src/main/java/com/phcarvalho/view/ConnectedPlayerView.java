@@ -46,10 +46,10 @@ public class ConnectedPlayerView extends JPanel {
 
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
+        list.setEnabled(false);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new Insets(2, 4, 2, 4);
-        list.setEnabled(false);
 
         JScrollPane scrollPane = new JScrollPane(list);
 

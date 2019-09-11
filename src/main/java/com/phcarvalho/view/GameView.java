@@ -9,6 +9,7 @@ import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.model.configuration.startingposition.vo.StartingPositionEnum;
+import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.vo.PieceColorEnum;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.util.DialogUtil;
@@ -162,7 +163,12 @@ public class GameView extends JPanel {
                         Game game = new Game(title, ownerPlayer, playersQuantity);
                         AddGameCommand addGameCommand = new AddGameCommand(game, false);
 
-                        controller.add(addGameCommand);
+                        try {
+                            controller.add(addGameCommand);
+                        } catch (ConnectionException e) {
+                            e.printStackTrace();
+                            //TODO add handling...
+                        }
                     }
                 }
             }
@@ -219,12 +225,18 @@ public class GameView extends JPanel {
 
             if(localUser.equals(ownerPlayer.getUser())){
                 mainView.getConnectedPlayerView().add(ownerPlayer);
+                mainView.getChatView().getMessageTextField().setEnabled(true);
                 addGameButton.setEnabled(false);
                 selectGameButton.setEnabled(false);
                 selectedGameValueLabel.setText(gameSelected.getTitle());
             }
 
             mainView.getBoardView().addPlayer(ownerPlayer);
+
+            String message = String.join("",
+                    "The player ", ownerPlayer.getUser().getName(), " is in the game!");
+
+            mainView.getChatView().displaySystemMessage(message);
         }
     }
 
@@ -265,7 +277,12 @@ public class GameView extends JPanel {
             Player player = new Player(pieceColor, startingPosition, localUser);
             AddPlayerCommand addPlayerCommand = new AddPlayerCommand(player, selectedGame);
 
-            controller.select(addPlayerCommand);
+            try {
+                controller.select(addPlayerCommand);
+            } catch (ConnectionException e) {
+                e.printStackTrace();
+                //TODO add handling...
+            }
         }
     }
 
@@ -317,31 +334,52 @@ public class GameView extends JPanel {
         User localUser = Configuration.getSingleton().getLocalUser();
 
         if(localUser.equals(player.getUser())){
-            mainView.getGameView().getAddGameButton().setEnabled(false);
-            mainView.getGameView().getSelectGameButton().setEnabled(false);
-            mainView.getGameView().getSelectedGameValueLabel().setText(game.getTitle());
+            mainView.getChatView().getMessageTextField().setEnabled(true);
+            addGameButton.setEnabled(false);
+            selectGameButton.setEnabled(false);
+            selectedGameValueLabel.setText(game.getTitle());
         }
 
         mainView.getBoardView().addPlayer(player);
         mainView.getConnectedPlayerView().add(player);
+
+        String message = String.join("",
+                "The player ", player.getUser().getName(), " is in the game!");
+
+        mainView.getChatView().displaySystemMessage(message);
     }
 
     private void flagAsReady() {
-        controller.flagAsReady();
+
+        try {
+            controller.flagAsReady();
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+            //TODO add handling...
+        }
+
         flagAsReadyButton.setEnabled(false);
-        mainView.getGameView().getAddGameButton().setEnabled(false);
-        mainView.getGameView().getSelectGameButton().setEnabled(false);
+        addGameButton.setEnabled(false);
+        selectGameButton.setEnabled(false);
     }
 
     public void flagAsReadyByCallback(FlagAsReadyCommand flagAsReadyCommand) {
 
         if(flagAsReadyCommand.getGame().isGameStarted()){
+            String message = "The game is started!";
+
             gameStatusValueLabel.setText("Started");
-            dialogUtil.showInformation("The game is started!", FLAG_AS_READY);
+            dialogUtil.showInformation(message, FLAG_AS_READY);
             mainView.getConnectedPlayerView().setTurnPlayer(flagAsReadyCommand.getGame().getTurnPlayer());
             mainView.getConnectedPlayerView().setReadyPlayer(flagAsReadyCommand.getPlayer());
+            mainView.getChatView().displaySystemMessage(message);
         }else{
             mainView.getConnectedPlayerView().setReadyPlayer(flagAsReadyCommand.getPlayer());
+
+            String message = String.join("",
+                    "The player ", flagAsReadyCommand.getPlayer().getUser().getName(), " is ready!");
+
+            mainView.getChatView().displaySystemMessage(message);
         }
     }
 

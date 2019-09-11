@@ -10,6 +10,7 @@ import com.phcarvalho.model.configuration.builder.vo.BoardRowConfiguration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.startingposition.registry.StartingPositionConfigurationRegistry;
 import com.phcarvalho.model.configuration.startingposition.vo.StartingPositionEnum;
+import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.vo.Piece;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.model.vo.Position;
@@ -28,12 +29,22 @@ public class BoardModel {
         boolean goal = isGoal(piece.getPlayer());
 
         if(goal){
-            boardRemoteCommandTemplate.notifyVictory(new NotifyVictoryCommand());
+            try {
+                boardRemoteCommandTemplate.notifyVictory(new NotifyVictoryCommand());
+            } catch (ConnectionException e) {
+                e.printStackTrace();
+                //TODO add handling...
+            }
         }
         else{
             Game gameSelected = Configuration.getSingleton().getGameSelected();
 
-            boardRemoteCommandTemplate.movePiece(new MovePieceCommand(sourcePosition, targetPosition, piece, gameSelected));
+            try {
+                boardRemoteCommandTemplate.movePiece(new MovePieceCommand(sourcePosition, targetPosition, piece, gameSelected));
+            } catch (ConnectionException e) {
+                e.printStackTrace();
+                //TODO add handling...
+            }
         }
     }
 

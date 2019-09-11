@@ -1,8 +1,9 @@
 package com.phcarvalho.view;
 
-import com.phcarvalho.controller.MenuController;
+import com.phcarvalho.controller.ConnectionController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
 import com.phcarvalho.model.configuration.entity.User;
+import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.view.util.DialogUtil;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.Random;
 
-public class MenuView extends JPanel {
+public class ConnectionView extends JPanel {
 
     private static final String DEFAULT_HOST = "localhost";
     private static final int DEFAULT_PORT = 9999;
@@ -18,7 +19,7 @@ public class MenuView extends JPanel {
     private static final String CONNECT_TO_SERVER = "Connect To Server";
     private static final String EMPTY_LABEL = "-";
 
-    private MenuController controller;
+    private ConnectionController controller;
     private MainView mainView;
     private DialogUtil dialogUtil;
     private JButton connectToServerButton;
@@ -29,7 +30,7 @@ public class MenuView extends JPanel {
     private JLabel localPortLabel;
     private JLabel localPortValueLabel;
 
-    public MenuView(MenuController controller) {
+    public ConnectionView(ConnectionController controller) {
         super(new GridBagLayout());
         this.controller = controller;
         dialogUtil = DependencyFactory.getSingleton().get(DialogUtil.class);
@@ -103,8 +104,14 @@ public class MenuView extends JPanel {
             if(port != null){
                 String userName = getUserName();
 
-                if(userName != null)
-                    controller.connectToServer(host, port, userName);
+                if(userName != null) {
+
+                    try {
+                        controller.connectToServer(host, port, userName);
+                    } catch (ConnectionException e) {
+                        dialogUtil.showError(e.getMessage(), e.getTitle(), e);
+                    }
+                }
             }
         }
     }
@@ -151,7 +158,7 @@ public class MenuView extends JPanel {
         return userName;
     }
 
-    public void setLocalUser(User localUser) {
+    public void connectToServerByCallback(User localUser) {
         userNameValueLabel.setText(localUser.getName());
         localHostValueLabel.setText(localUser.getHost());
         localPortValueLabel.setText(localUser.getPort().toString());
@@ -159,6 +166,9 @@ public class MenuView extends JPanel {
         mainView.getGameView().getAddGameButton().setEnabled(true);
         mainView.getGameView().getSelectGameButton().setEnabled(true);
 //        mainView.getConnectedPlayerView().getStartGameButton().setEnabled(true);
+//        mainView.getChatView().getMessageTextField().setEnabled(true);
+        mainView.getChatView().displaySystemMessage("The server is connected!");
+//        dialogUtil.showInformation("The server is connected!", SERVER_CONNECTION);
     }
 
     public void clear() {
@@ -169,6 +179,7 @@ public class MenuView extends JPanel {
         mainView.getGameView().getAddGameButton().setEnabled(false);
         mainView.getGameView().getSelectGameButton().setEnabled(false);
 //        mainView.getConnectedPlayerView().getStartGameButton().setEnabled(false);
+        mainView.getChatView().getMessageTextField().setEnabled(false);
     }
 
     public void setMainView(MainView mainView) {

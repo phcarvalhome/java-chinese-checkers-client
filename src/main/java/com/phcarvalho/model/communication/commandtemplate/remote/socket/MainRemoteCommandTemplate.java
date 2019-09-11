@@ -6,6 +6,7 @@ import com.phcarvalho.model.communication.connection.IConnectionHandlerStrategy;
 import com.phcarvalho.model.communication.protocol.vo.command.AddGameCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand;
+import com.phcarvalho.model.exception.ConnectionException;
 
 public class MainRemoteCommandTemplate implements IMainRemoteCommandTemplate {
 
@@ -16,17 +17,17 @@ public class MainRemoteCommandTemplate implements IMainRemoteCommandTemplate {
     }
 
     @Override
-    public void addGame(AddGameCommand addGameCommand){
+    public void addGame(AddGameCommand addGameCommand) throws ConnectionException {
         connectionHandlerStrategy.send(addGameCommand);
     }
 
     @Override
-    public void addPlayer(AddPlayerCommand addPlayerCommand) {
+    public void addPlayer(AddPlayerCommand addPlayerCommand) throws ConnectionException {
         connectionHandlerStrategy.send(addPlayerCommand);
     }
 
     @Override
-    public void flagAsReady(FlagAsReadyCommand flagAsReadyCommand) {
+    public void flagAsReady(FlagAsReadyCommand flagAsReadyCommand) throws ConnectionException {
         connectionHandlerStrategy.send(flagAsReadyCommand);
     }
 }

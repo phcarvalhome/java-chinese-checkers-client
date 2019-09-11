@@ -50,7 +50,8 @@ public class DependencyFactory {
         buildBoardMVC();
         buildConnectedPlayerMVC();
         buildGameMVC();
-        buildMenuMVC();
+        buildConnectionMVC();
+        buildChatMVC();
         buildMainMVC();
 
         get(CommandInvoker.class).buildCommandObserverMap();
@@ -80,7 +81,7 @@ public class DependencyFactory {
         connectedPlayerController.initializeList();
         dependencyMap.put(ConnectedPlayerView.class, connectedPlayerView);
         dependencyMap.put(ConnectedPlayerModel.class, connectedPlayerModel);
-        get(IConnectionHandlerStrategy.class).setConnectedPlayerModel(connectedPlayerModel);
+//        get(IConnectionHandlerStrategy.class).setConnectedPlayerModel(connectedPlayerModel);
     }
 
     private void buildGameMVC() {
@@ -93,19 +94,30 @@ public class DependencyFactory {
         gameController.initializeList();
         dependencyMap.put(GameView.class, gameView);
         dependencyMap.put(GameModel.class, gameModel);
-        get(IConnectionHandlerStrategy.class).setGameModel(gameModel);
+//        get(IConnectionHandlerStrategy.class).setGameModel(gameModel);
     }
 
-    private void buildMenuMVC() {
-        MenuController menuController = new MenuController();
-        MenuView menuView = new MenuView(menuController);
-        MenuModel menuModel = new MenuModel(menuController);
+    private void buildConnectionMVC() {
+        ConnectionController connectionController = new ConnectionController();
+        ConnectionView connectionView = new ConnectionView(connectionController);
+        ConnectionModel connectionModel = new ConnectionModel(connectionController);
 
-        menuController.setView(menuView);
-        menuController.setModel(menuModel);
-        dependencyMap.put(MenuView.class, menuView);
-        dependencyMap.put(MenuModel.class, menuModel);
-        get(IConnectionHandlerStrategy.class).setMenuModel(menuModel);
+        connectionController.setView(connectionView);
+        connectionController.setModel(connectionModel);
+        dependencyMap.put(ConnectionView.class, connectionView);
+        dependencyMap.put(ConnectionModel.class, connectionModel);
+//        get(IConnectionHandlerStrategy.class).setConnectionModel(connectionModel);
+    }
+
+    private void buildChatMVC() {
+        ChatController chatController = new ChatController();
+        ChatView chatView = new ChatView(chatController);
+        ChatModel chatModel = new ChatModel(chatController);
+
+        chatController.setView(chatView);
+        chatController.setModel(chatModel);
+        dependencyMap.put(ChatView.class, chatView);
+        dependencyMap.put(ChatModel.class, chatModel);
     }
 
     private void buildMainMVC() {
@@ -121,7 +133,10 @@ public class DependencyFactory {
         get(BoardView.class).setMainView(mainView);
         get(ConnectedPlayerView.class).setMainView(mainView);
         get(GameView.class).setMainView(mainView);
-        get(MenuView.class).setMainView(mainView);
+        get(ConnectionView.class).setMainView(mainView);
+        get(ChatView.class).setMainView(mainView);
+        get(IConnectionHandlerStrategy.class).setMainModel(mainModel);
+        //TODO talvez fazer o set de cada model que foi colocado lá...
     }
 
     public <T> T get(Class<T> type){

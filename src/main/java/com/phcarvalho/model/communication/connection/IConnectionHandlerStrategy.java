@@ -1,22 +1,17 @@
 package com.phcarvalho.model.communication.connection;
 
-import com.phcarvalho.model.ConnectedPlayerModel;
-import com.phcarvalho.model.GameModel;
-import com.phcarvalho.model.MenuModel;
+import com.phcarvalho.model.MainModel;
 import com.phcarvalho.model.communication.commandtemplate.local.socket.CommandInvoker;
 import com.phcarvalho.model.communication.protocol.vo.command.ICommand;
+import com.phcarvalho.model.exception.ConnectionException;
 
 public interface IConnectionHandlerStrategy {
 
-    void connectToServer(String host, Integer port, String userName);
+    void connectToServer(String host, Integer port, String userName) throws ConnectionException;
 
-    void send(ICommand command);
+    void send(ICommand command) throws ConnectionException;
 
     void setCommandInvoker(CommandInvoker commandInvoker);
 
-    void setMenuModel(MenuModel menuModel);
-
-    void setGameModel(GameModel gameModel);
-
-    void setConnectedPlayerModel(ConnectedPlayerModel connectedPlayerModel);
+    void setMainModel(MainModel mainModel);
 }

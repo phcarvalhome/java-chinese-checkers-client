@@ -9,6 +9,7 @@ import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.entity.User;
+import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.vo.Player;
 
 import javax.swing.*;
@@ -25,7 +26,7 @@ public class GameModel {
         list = new DefaultListModel();
     }
 
-    public void add(AddGameCommand addGameCommand){
+    public void add(AddGameCommand addGameCommand) throws ConnectionException {
         mainRemoteCommandTemplate.addGame(addGameCommand);
     }
 
@@ -49,7 +50,7 @@ public class GameModel {
         }
     }
 
-    public void select(AddPlayerCommand addPlayerCommand) {
+    public void select(AddPlayerCommand addPlayerCommand) throws ConnectionException {
         mainRemoteCommandTemplate.addPlayer(addPlayerCommand);
     }
 
@@ -80,7 +81,7 @@ public class GameModel {
         }
     }
 
-    public void flagAsReady() {
+    public void flagAsReady() throws ConnectionException {
         Player player = Configuration.getSingleton().getPlayer();
         Game gameSelected = Configuration.getSingleton().getGameSelected();
         FlagAsReadyCommand flagAsReadyCommand = new FlagAsReadyCommand(player, gameSelected);
