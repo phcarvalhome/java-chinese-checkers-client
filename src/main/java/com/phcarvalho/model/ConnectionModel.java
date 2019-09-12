@@ -19,12 +19,14 @@ public class ConnectionModel {
     }
 
     public void connectToServer(String host, Integer port, String userName) throws RemoteException {
+//        User localUser = User.of(userName, host, port); TODO pegar o ip...
+        Configuration.getSingleton().setLocalUser(localUser);
         connectionHandlerStrategy.connectToServer(host, port, userName);
     }
 
     public void connectToServerByCallback(User localUser) {
         Configuration.getSingleton().setServerConnected(true);
-        Configuration.getSingleton().setLocalUser(localUser);
+//        Configuration.getSingleton().setLocalUser(localUser);
         controller.connectToServerByCallback(localUser);
     }
 

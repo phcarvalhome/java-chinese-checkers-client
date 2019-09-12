@@ -58,13 +58,14 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(host, user.host) &&
+        return Objects.equals(name, user.name) &&
+                Objects.equals(host, user.host) &&
                 Objects.equals(port, user.port);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(host, port);
+        return Objects.hash(name, host, port);
     }
 
     @Override
