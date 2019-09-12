@@ -63,8 +63,8 @@ public class Configuration {
 
     public User getLocalUser() {
 
-        if(localUser == null)
-            throw new RuntimeException("The localUser field is null!");
+//        if(localUser == null)
+//            throw new RuntimeException("The localUser field is null!");
 
         return localUser;
     }

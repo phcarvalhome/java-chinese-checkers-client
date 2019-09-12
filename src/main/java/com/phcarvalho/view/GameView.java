@@ -9,7 +9,6 @@ import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.model.configuration.startingposition.vo.StartingPositionEnum;
-import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.vo.PieceColorEnum;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.util.DialogUtil;
@@ -17,6 +16,7 @@ import com.phcarvalho.view.util.DialogUtil;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.Random;
 
 public class GameView extends JPanel {
@@ -165,7 +165,7 @@ public class GameView extends JPanel {
 
                         try {
                             controller.add(addGameCommand);
-                        } catch (ConnectionException e) {
+                        } catch (RemoteException e) {
                             e.printStackTrace();
                             //TODO add handling...
                         }
@@ -279,7 +279,7 @@ public class GameView extends JPanel {
 
             try {
                 controller.select(addPlayerCommand);
-            } catch (ConnectionException e) {
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 //TODO add handling...
             }
@@ -353,7 +353,7 @@ public class GameView extends JPanel {
 
         try {
             controller.flagAsReady();
-        } catch (ConnectionException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
             //TODO add handling...
         }

@@ -2,7 +2,7 @@ package com.phcarvalho.controller;
 
 import com.phcarvalho.model.ChatModel;
 import com.phcarvalho.model.communication.protocol.vo.command.SendMessageCommand;
-import com.phcarvalho.model.exception.ConnectionException;
+import java.rmi.RemoteException;
 import com.phcarvalho.view.ChatView;
 
 public class ChatController {
@@ -13,7 +13,7 @@ public class ChatController {
     public ChatController() {
     }
 
-    public void sendMessage(SendMessageCommand sendMessageCommand) throws ConnectionException {
+    public void sendMessage(SendMessageCommand sendMessageCommand) throws RemoteException {
         model.sendMessage(sendMessageCommand);
     }
 

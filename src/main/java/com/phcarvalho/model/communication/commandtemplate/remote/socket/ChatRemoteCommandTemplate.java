@@ -1,21 +1,22 @@
 package com.phcarvalho.model.communication.commandtemplate.remote.socket;
 
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.communication.commandtemplate.remote.IChatRemoteCommandTemplate;
-import com.phcarvalho.model.communication.connection.IConnectionHandlerStrategy;
+import com.phcarvalho.model.communication.commandtemplate.IChatCommandTemplate;
+import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
 import com.phcarvalho.model.communication.protocol.vo.command.SendMessageCommand;
-import com.phcarvalho.model.exception.ConnectionException;
 
-public class ChatRemoteCommandTemplate implements IChatRemoteCommandTemplate {
+import java.rmi.RemoteException;
 
-    private IConnectionHandlerStrategy connectionHandlerStrategy;
+public class ChatRemoteCommandTemplate implements IChatCommandTemplate {
+
+    private IConnectionStrategy connectionHandlerStrategy;
 
     public ChatRemoteCommandTemplate() {
-        connectionHandlerStrategy = DependencyFactory.getSingleton().get(IConnectionHandlerStrategy.class);
+        connectionHandlerStrategy = DependencyFactory.getSingleton().get(IConnectionStrategy.class);
     }
 
     @Override
-    public void sendMessage(SendMessageCommand sendMessageCommand) throws ConnectionException {
+    public void sendMessage(SendMessageCommand sendMessageCommand) throws RemoteException {
         connectionHandlerStrategy.send(sendMessageCommand);
     }
 }

@@ -1,7 +1,5 @@
 package com.phcarvalho.model.configuration.startingposition.vo;
 
-import com.phcarvalho.model.vo.PieceColorEnum;
-
 import java.util.Arrays;
 import java.util.stream.Collectors;
 

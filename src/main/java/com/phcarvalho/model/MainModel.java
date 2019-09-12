@@ -2,7 +2,6 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.MainController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.entity.User;
 
 public class MainModel {

@@ -2,7 +2,7 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.BoardController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.communication.commandtemplate.remote.IBoardRemoteCommandTemplate;
+import com.phcarvalho.model.communication.commandtemplate.IBoardCommandTemplate;
 import com.phcarvalho.model.communication.protocol.vo.command.MovePieceCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.NotifyVictoryCommand;
 import com.phcarvalho.model.configuration.Configuration;
@@ -10,7 +10,7 @@ import com.phcarvalho.model.configuration.builder.vo.BoardRowConfiguration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.startingposition.registry.StartingPositionConfigurationRegistry;
 import com.phcarvalho.model.configuration.startingposition.vo.StartingPositionEnum;
-import com.phcarvalho.model.exception.ConnectionException;
+import java.rmi.RemoteException;
 import com.phcarvalho.model.vo.Piece;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.model.vo.Position;
@@ -18,11 +18,11 @@ import com.phcarvalho.model.vo.Position;
 public class BoardModel {
 
     private BoardController controller;
-    private IBoardRemoteCommandTemplate boardRemoteCommandTemplate;
+    private IBoardCommandTemplate boardCommandTemplate;
 
     public BoardModel(BoardController controller) {
         this.controller = controller;
-        boardRemoteCommandTemplate = DependencyFactory.getSingleton().get(IBoardRemoteCommandTemplate.class);
+        boardCommandTemplate = DependencyFactory.getSingleton().get(IBoardCommandTemplate.class);
     }
 
     public void movePiece(Position sourcePosition, Position targetPosition, Piece piece) {
@@ -30,8 +30,8 @@ public class BoardModel {
 
         if(goal){
             try {
-                boardRemoteCommandTemplate.notifyVictory(new NotifyVictoryCommand());
-            } catch (ConnectionException e) {
+                boardCommandTemplate.notifyVictory(new NotifyVictoryCommand());
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 //TODO add handling...
             }
@@ -40,8 +40,8 @@ public class BoardModel {
             Game gameSelected = Configuration.getSingleton().getGameSelected();
 
             try {
-                boardRemoteCommandTemplate.movePiece(new MovePieceCommand(sourcePosition, targetPosition, piece, gameSelected));
-            } catch (ConnectionException e) {
+                boardCommandTemplate.movePiece(new MovePieceCommand(sourcePosition, targetPosition, piece, gameSelected));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 //TODO add handling...
             }

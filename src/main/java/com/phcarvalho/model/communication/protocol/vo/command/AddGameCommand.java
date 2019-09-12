@@ -2,10 +2,6 @@ package com.phcarvalho.model.communication.protocol.vo.command;
 
 import com.phcarvalho.model.communication.protocol.vo.CommandTypeEnum;
 import com.phcarvalho.model.configuration.entity.Game;
-import com.phcarvalho.model.vo.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AddGameCommand extends AbstractCommand {
 

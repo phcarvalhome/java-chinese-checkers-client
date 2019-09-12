@@ -1,6 +1,8 @@
 package com.phcarvalho.model.exception;
 
-public class ConnectionException extends Exception {
+import java.rmi.RemoteException;
+
+public class ConnectionException extends RemoteException {
 
     private String title;
 

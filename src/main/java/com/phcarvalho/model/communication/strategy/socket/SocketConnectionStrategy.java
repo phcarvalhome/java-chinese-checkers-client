@@ -1,12 +1,15 @@
-package com.phcarvalho.model.communication.connection.socket;
+package com.phcarvalho.model.communication.strategy.socket;
 
 import com.phcarvalho.dependencyfactory.DependencyFactory;
 import com.phcarvalho.model.MainModel;
 import com.phcarvalho.model.communication.commandtemplate.local.socket.CommandInvoker;
-import com.phcarvalho.model.communication.connection.IConnectionHandlerStrategy;
+import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
 import com.phcarvalho.model.communication.protocol.vo.RemoteEvent;
 import com.phcarvalho.model.communication.protocol.vo.command.ICommand;
 import com.phcarvalho.model.configuration.entity.User;
+
+import java.rmi.RemoteException;
+
 import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.util.LogUtil;
 import com.phcarvalho.view.util.DialogUtil;
@@ -17,7 +20,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.Executors;
 
-public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
+public class SocketConnectionStrategy implements IConnectionStrategy {
 
     private static final String SERVER_CONNECTION = "Server Connection";
     public static final String RECEIVE_REMOTE_COMMAND = "Receive Remote Command";
@@ -37,12 +40,12 @@ public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
 
     private MainModel mainModel;
 
-    public SocketHandlerStrategy() {
+    public SocketConnectionStrategy() {
         dialogUtil = DependencyFactory.getSingleton().get(DialogUtil.class);
     }
 
     @Override
-    public void connectToServer(String host, Integer port, String userName) throws ConnectionException {
+    public void connectToServer(String host, Integer port, String userName) throws RemoteException {
 
         if((socket != null) && (socket.isConnected()))
             throw new ConnectionException("The server is already connected!", SERVER_CONNECTION);
@@ -108,7 +111,7 @@ public class SocketHandlerStrategy implements IConnectionHandlerStrategy {
     }
 
     @Override
-    public void send(ICommand command) throws ConnectionException {
+    public void send(ICommand command) throws RemoteException {
 
         if((socket == null) || (!socket.isConnected()))
             throw new ConnectionException("The server is not connected!", SERVER_CONNECTION);

@@ -2,15 +2,13 @@ package com.phcarvalho.dependencyfactory;
 
 import com.phcarvalho.controller.*;
 import com.phcarvalho.model.*;
+import com.phcarvalho.model.communication.commandtemplate.IBoardCommandTemplate;
+import com.phcarvalho.model.communication.commandtemplate.IChatCommandTemplate;
+import com.phcarvalho.model.communication.commandtemplate.IMainCommandTemplate;
 import com.phcarvalho.model.communication.commandtemplate.local.socket.CommandInvoker;
-import com.phcarvalho.model.communication.commandtemplate.remote.IBoardRemoteCommandTemplate;
-import com.phcarvalho.model.communication.commandtemplate.remote.IChatRemoteCommandTemplate;
-import com.phcarvalho.model.communication.commandtemplate.remote.IMainRemoteCommandTemplate;
-import com.phcarvalho.model.communication.commandtemplate.remote.socket.BoardRemoteCommandTemplate;
-import com.phcarvalho.model.communication.commandtemplate.remote.socket.ChatRemoteCommandTemplate;
-import com.phcarvalho.model.communication.commandtemplate.remote.socket.MainRemoteCommandTemplate;
-import com.phcarvalho.model.communication.connection.IConnectionHandlerStrategy;
-import com.phcarvalho.model.communication.connection.socket.SocketHandlerStrategy;
+import com.phcarvalho.model.communication.strategy.ICommandTemplateStrategy;
+import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
+import com.phcarvalho.model.communication.strategy.factory.ICommunicationStrategyFactory;
 import com.phcarvalho.model.configuration.startingposition.registry.StartingPositionConfigurationRegistry;
 import com.phcarvalho.view.*;
 import com.phcarvalho.view.datatransfer.BoardPositionTransferHandler;
@@ -31,6 +29,7 @@ public class DependencyFactory {
         return singleton;
     }
 
+    private ICommunicationStrategyFactory communicationStrategyFactory;
     private Map<Class<?>, Object> dependencyMap;
 
     private DependencyFactory() {
@@ -40,12 +39,13 @@ public class DependencyFactory {
     public void build(){
         dependencyMap.put(DialogUtil.class, new DialogUtil());
         dependencyMap.put(CommandInvoker.class, new CommandInvoker());
-        dependencyMap.put(IConnectionHandlerStrategy.class, new SocketHandlerStrategy());
+        dependencyMap.put(IConnectionStrategy.class, communicationStrategyFactory.buildConnectionStrategy());
+        dependencyMap.put(ICommandTemplateStrategy.class, communicationStrategyFactory.buildCommandTemplateStrategy());
         dependencyMap.put(StartingPositionConfigurationRegistry.class, new StartingPositionConfigurationRegistry());
 
-        dependencyMap.put(IMainRemoteCommandTemplate.class, new MainRemoteCommandTemplate());
-        dependencyMap.put(IBoardRemoteCommandTemplate.class, new BoardRemoteCommandTemplate());
-        dependencyMap.put(IChatRemoteCommandTemplate.class, new ChatRemoteCommandTemplate());
+        dependencyMap.put(IBoardCommandTemplate.class, get(ICommandTemplateStrategy.class).getCommandTemplateSet().getBoardCommandTemplate());
+        dependencyMap.put(IChatCommandTemplate.class, get(ICommandTemplateStrategy.class).getCommandTemplateSet().getChatCommandTemplate());
+        dependencyMap.put(IMainCommandTemplate.class, get(ICommandTemplateStrategy.class).getCommandTemplateSet().getMainCommandTemplate());
 
         buildBoardMVC();
         buildConnectedPlayerMVC();
@@ -55,7 +55,7 @@ public class DependencyFactory {
         buildMainMVC();
 
         get(CommandInvoker.class).buildCommandObserverMap();
-        get(IConnectionHandlerStrategy.class).setCommandInvoker(get(CommandInvoker.class));
+        get(IConnectionStrategy.class).setCommandInvoker(get(CommandInvoker.class));
 
         dependencyMap.put(BoardPositionTransferHandler.class, new BoardPositionTransferHandler());
     }
@@ -135,7 +135,7 @@ public class DependencyFactory {
         get(GameView.class).setMainView(mainView);
         get(ConnectionView.class).setMainView(mainView);
         get(ChatView.class).setMainView(mainView);
-        get(IConnectionHandlerStrategy.class).setMainModel(mainModel);
+        get(IConnectionStrategy.class).setMainModel(mainModel);
         //TODO talvez fazer o set de cada model que foi colocado lá...
     }
 
@@ -146,5 +146,9 @@ public class DependencyFactory {
             throw new RuntimeException("The dependency is null! Type: " + type);
 
         return (T) dependency;
+    }
+
+    public void setCommunicationStrategyFactory(ICommunicationStrategyFactory communicationStrategyFactory) {
+        this.communicationStrategyFactory = communicationStrategyFactory;
     }
 }

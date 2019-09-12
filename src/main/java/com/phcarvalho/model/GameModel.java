@@ -2,32 +2,32 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.GameController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.communication.commandtemplate.remote.IMainRemoteCommandTemplate;
+import com.phcarvalho.model.communication.commandtemplate.IMainCommandTemplate;
 import com.phcarvalho.model.communication.protocol.vo.command.AddGameCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.entity.User;
-import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.vo.Player;
 
 import javax.swing.*;
+import java.rmi.RemoteException;
 
 public class GameModel {
 
     private GameController controller;
-    private IMainRemoteCommandTemplate mainRemoteCommandTemplate;
+    private IMainCommandTemplate mainCommandTemplate;
     private DefaultListModel<Game> list;
 
     public GameModel(GameController controller) {
         this.controller = controller;
-        mainRemoteCommandTemplate = DependencyFactory.getSingleton().get(IMainRemoteCommandTemplate.class);
+        mainCommandTemplate = DependencyFactory.getSingleton().get(IMainCommandTemplate.class);
         list = new DefaultListModel();
     }
 
-    public void add(AddGameCommand addGameCommand) throws ConnectionException {
-        mainRemoteCommandTemplate.addGame(addGameCommand);
+    public void add(AddGameCommand addGameCommand) throws RemoteException {
+        mainCommandTemplate.addGame(addGameCommand);
     }
 
     public void addByCallback(AddGameCommand addGameCommand) {
@@ -50,8 +50,8 @@ public class GameModel {
         }
     }
 
-    public void select(AddPlayerCommand addPlayerCommand) throws ConnectionException {
-        mainRemoteCommandTemplate.addPlayer(addPlayerCommand);
+    public void select(AddPlayerCommand addPlayerCommand) throws RemoteException {
+        mainCommandTemplate.addPlayer(addPlayerCommand);
     }
 
     public void selectByCallback(AddPlayerCommand addPlayerCommand) {
@@ -81,12 +81,12 @@ public class GameModel {
         }
     }
 
-    public void flagAsReady() throws ConnectionException {
+    public void flagAsReady() throws RemoteException {
         Player player = Configuration.getSingleton().getPlayer();
         Game gameSelected = Configuration.getSingleton().getGameSelected();
         FlagAsReadyCommand flagAsReadyCommand = new FlagAsReadyCommand(player, gameSelected);
 
-        mainRemoteCommandTemplate.flagAsReady(flagAsReadyCommand);
+        mainCommandTemplate.flagAsReady(flagAsReadyCommand);
     }
 
     public void flagAsReadyByCallback(FlagAsReadyCommand flagAsReadyCommand) {

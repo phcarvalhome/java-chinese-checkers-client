@@ -4,8 +4,6 @@ import com.phcarvalho.model.BoardPositionModel;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 
 public class BoardPositionTransferable implements Transferable {
 

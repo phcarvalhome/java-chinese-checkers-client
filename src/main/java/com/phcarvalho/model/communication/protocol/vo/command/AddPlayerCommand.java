@@ -4,9 +4,6 @@ import com.phcarvalho.model.communication.protocol.vo.CommandTypeEnum;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.vo.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AddPlayerCommand extends AbstractCommand {
 
     private Player player;

@@ -1,6 +1,5 @@
 package com.phcarvalho.view.listener;
 
-import com.phcarvalho.controller.MainController;
 import com.phcarvalho.view.BoardPositionView;
 
 import javax.swing.*;

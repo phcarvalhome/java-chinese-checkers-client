@@ -3,7 +3,6 @@ package com.phcarvalho.view;
 import com.phcarvalho.controller.ChatController;
 import com.phcarvalho.model.communication.protocol.vo.command.SendMessageCommand;
 import com.phcarvalho.model.configuration.Configuration;
-import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.util.LogUtil;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.listener.ChatTextPaneKeyListener;
@@ -12,6 +11,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 
 public class ChatView extends JPanel {
 
@@ -68,7 +68,7 @@ public class ChatView extends JPanel {
 
         try {
             controller.sendMessage(sendMessageCommand);
-        } catch (ConnectionException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
             //TODO add handling...
         }

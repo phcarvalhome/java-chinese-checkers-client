@@ -2,8 +2,9 @@ package com.phcarvalho.controller;
 
 import com.phcarvalho.model.ConnectionModel;
 import com.phcarvalho.model.configuration.entity.User;
-import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.view.ConnectionView;
+
+import java.rmi.RemoteException;
 
 public class ConnectionController {
 
@@ -13,7 +14,7 @@ public class ConnectionController {
     public ConnectionController() {
     }
 
-    public void connectToServer(String host, Integer port, String userName) throws ConnectionException {
+    public void connectToServer(String host, Integer port, String userName) throws RemoteException {
         model.connectToServer(host, port, userName);
     }
 

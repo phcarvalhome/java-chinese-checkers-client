@@ -8,7 +8,8 @@ public enum CommandTypeEnum {
     NOTIFY_VICTORY(CommandTemplateEnum.BOARD, "notifyVictory"),
     NOTIFY_WITHDRAWAL(CommandTemplateEnum.BOARD, "notifyWithdrawal"),
     MOVE_PIECE(CommandTemplateEnum.BOARD, "movePiece"),
-    SEND_MESSAGE(CommandTemplateEnum.CHAT, "sendMessage");
+    SEND_MESSAGE(CommandTemplateEnum.CHAT, "sendMessage"),
+    CONNECT(CommandTemplateEnum.CONNECTION, "connect");
 
     private CommandTemplateEnum template;
     private String value;
