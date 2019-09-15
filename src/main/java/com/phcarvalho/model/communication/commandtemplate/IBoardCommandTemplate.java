@@ -7,7 +7,7 @@ import com.phcarvalho.model.communication.protocol.vo.command.NotifyWithdrawalCo
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IBoardCommandTemplate extends Remote {
+public interface IBoardCommandTemplate extends ICommandTemplate {
 
     void notifyVictory(NotifyVictoryCommand notifyVictoryCommand) throws RemoteException;
 

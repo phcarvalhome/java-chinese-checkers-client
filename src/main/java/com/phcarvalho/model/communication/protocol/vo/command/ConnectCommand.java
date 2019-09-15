@@ -1,15 +1,14 @@
 package com.phcarvalho.model.communication.protocol.vo.command;
 
 import com.phcarvalho.model.communication.protocol.vo.CommandTypeEnum;
-
-import java.util.List;
+import com.phcarvalho.model.configuration.entity.User;
 
 public class ConnectCommand extends AbstractCommand {
 
-    private List<String> apiNameList;
+    private User remoteUser;
 
-    public ConnectCommand(List<String> apiNameList) {
-        this.apiNameList = apiNameList;
+    public ConnectCommand(User remoteUser) {
+        this.remoteUser = remoteUser;
     }
 
     @Override
@@ -17,14 +16,14 @@ public class ConnectCommand extends AbstractCommand {
         return CommandTypeEnum.CONNECT;
     }
 
-    public List<String> getApiNameList() {
-        return apiNameList;
+    public User getRemoteUser() {
+        return remoteUser;
     }
 
     @Override
     public String toString() {
         return "ConnectCommand{" +
-                "apiNameList=" + apiNameList +
+                "remoteUser=" + remoteUser +
                 '}';
     }
 }

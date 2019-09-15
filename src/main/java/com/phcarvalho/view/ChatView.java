@@ -119,7 +119,8 @@ public class ChatView extends JPanel {
     }
 
     public void displaySystemMessage(String message){
-        displayMessage("SYSTEM", message, Color.BLACK);
+        String remoteUserName = Configuration.getSingleton().getRemoteUser().getName();
+        displayMessage(remoteUserName, message, Color.BLACK);
     }
 
     public void setMainView(MainView mainView) {

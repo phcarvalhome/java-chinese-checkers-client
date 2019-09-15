@@ -1,15 +1,11 @@
 package com.phcarvalho.model.communication.strategy.socket;
 
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.MainModel;
 import com.phcarvalho.model.communication.commandtemplate.local.socket.CommandInvoker;
-import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
 import com.phcarvalho.model.communication.protocol.vo.RemoteEvent;
 import com.phcarvalho.model.communication.protocol.vo.command.ICommand;
+import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
 import com.phcarvalho.model.configuration.entity.User;
-
-import java.rmi.RemoteException;
-
 import com.phcarvalho.model.exception.ConnectionException;
 import com.phcarvalho.model.util.LogUtil;
 import com.phcarvalho.view.util.DialogUtil;
@@ -18,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.concurrent.Executors;
 
 public class SocketConnectionStrategy implements IConnectionStrategy {
@@ -34,38 +31,34 @@ public class SocketConnectionStrategy implements IConnectionStrategy {
     private CommandInvoker commandInvoker;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    private User localUser;
 
     private DialogUtil dialogUtil;
 
-    private MainModel mainModel;
-
     public SocketConnectionStrategy() {
+        commandInvoker = DependencyFactory.getSingleton().get(CommandInvoker.class); //TODO teste da injecao direta...
         dialogUtil = DependencyFactory.getSingleton().get(DialogUtil.class);
     }
 
     @Override
-    public void connectToServer(String host, Integer port, String userName) throws RemoteException {
+    public void connectToServer(User remoteUser) throws RemoteException {
 
         if((socket != null) && (socket.isConnected()))
             throw new ConnectionException("The server is already connected!", SERVER_CONNECTION);
+
+        String host = remoteUser.getHost();
+        Integer port = remoteUser.getPort();
 
         try {
             socket = new Socket(host, port);
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
-            connectToServerByCallback(userName);
+//            localUser.setPort(socket.getLocalPort());
             waitRemoteEvent();
         } catch (IOException e) {
             closeResources();
 
             throw new ConnectionException("Error in the server connection!", e, SERVER_CONNECTION);
         }
-    }
-
-    private void connectToServerByCallback(String userName) {
-        localUser = User.of(userName, socket.getLocalAddress().getHostName(), socket.getLocalPort());
-        mainModel.connectToServerByCallback(localUser);
     }
 
     private void waitRemoteEvent() {
@@ -80,7 +73,7 @@ public class SocketConnectionStrategy implements IConnectionStrategy {
                     commandInvoker.execute(remoteEvent);
                 } catch (IOException | ClassNotFoundException e) {
                     dialogUtil.showError("Error in the remote command receiving!", RECEIVE_REMOTE_COMMAND, e);
-                    mainModel.clear();
+//                    mainModel.clear(); //TODO dar o clear em um erro quando tentar se conectar, mas em um canto generico...
                     closeResources();
 
                     return;
@@ -110,7 +103,6 @@ public class SocketConnectionStrategy implements IConnectionStrategy {
         }
     }
 
-    @Override
     public void send(ICommand command) throws RemoteException {
 
         if((socket == null) || (!socket.isConnected()))
@@ -129,13 +121,8 @@ public class SocketConnectionStrategy implements IConnectionStrategy {
         }
     }
 
-    @Override
-    public void setCommandInvoker(CommandInvoker commandInvoker) {
-        this.commandInvoker = commandInvoker;
-    }
-
-    @Override
-    public void setMainModel(MainModel mainModel) {
-        this.mainModel = mainModel;
-    }
+    //TODO testar se ainda precisa setar manual no dependecy factory
+//    public void setCommandInvoker(CommandInvoker commandInvoker) {
+//        this.commandInvoker = commandInvoker;
+//    }
 }

@@ -14,12 +14,12 @@ public class ConnectionController {
     public ConnectionController() {
     }
 
-    public void connectToServer(String host, Integer port, String userName) throws RemoteException {
-        model.connectToServer(host, port, userName);
+    public void connectToServer(User localUser, User remoteUser) throws RemoteException {
+        model.connectToServer(localUser, remoteUser);
     }
 
-    public void connectToServerByCallback(User localUser) {
-        view.connectToServerByCallback(localUser);
+    public void connectToServerByCallback() {
+        view.connectToServerByCallback();
     }
 
     public void clear() {

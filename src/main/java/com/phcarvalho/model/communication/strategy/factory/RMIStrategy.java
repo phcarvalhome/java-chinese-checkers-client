@@ -1,11 +1,11 @@
 package com.phcarvalho.model.communication.strategy.factory;
 
-import com.phcarvalho.model.communication.strategy.ICommandTemplateStrategy;
+import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
-import com.phcarvalho.model.communication.strategy.rmi.RMICommandTemplateStrategy;
+import com.phcarvalho.model.communication.strategy.rmi.RMICommandTemplateFactory;
 import com.phcarvalho.model.communication.strategy.rmi.RMIConnectionStrategy;
 
-public class RMIStrategyFactory implements ICommunicationStrategyFactory {
+public class RMIStrategy implements ICommunicationStrategy {
 
     @Override
     public IConnectionStrategy buildConnectionStrategy() {
@@ -13,7 +13,7 @@ public class RMIStrategyFactory implements ICommunicationStrategyFactory {
     }
 
     @Override
-    public ICommandTemplateStrategy buildCommandTemplateStrategy() {
-        return new RMICommandTemplateStrategy();
+    public ICommandTemplateFactory buildCommandTemplateFactory() {
+        return new RMICommandTemplateFactory();
     }
 }

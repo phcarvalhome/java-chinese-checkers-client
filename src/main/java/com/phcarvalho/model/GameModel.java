@@ -2,10 +2,10 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.GameController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.communication.commandtemplate.IMainCommandTemplate;
 import com.phcarvalho.model.communication.protocol.vo.command.AddGameCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand;
+import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.entity.User;
@@ -17,17 +17,17 @@ import java.rmi.RemoteException;
 public class GameModel {
 
     private GameController controller;
-    private IMainCommandTemplate mainCommandTemplate;
+    private ICommandTemplateFactory commandTemplateFactory;
     private DefaultListModel<Game> list;
 
     public GameModel(GameController controller) {
         this.controller = controller;
-        mainCommandTemplate = DependencyFactory.getSingleton().get(IMainCommandTemplate.class);
+        commandTemplateFactory = DependencyFactory.getSingleton().get(ICommandTemplateFactory.class);
         list = new DefaultListModel();
     }
 
     public void add(AddGameCommand addGameCommand) throws RemoteException {
-        mainCommandTemplate.addGame(addGameCommand);
+        commandTemplateFactory.getMain().addGame(addGameCommand);
     }
 
     public void addByCallback(AddGameCommand addGameCommand) {
@@ -51,7 +51,7 @@ public class GameModel {
     }
 
     public void select(AddPlayerCommand addPlayerCommand) throws RemoteException {
-        mainCommandTemplate.addPlayer(addPlayerCommand);
+        commandTemplateFactory.getMain().addPlayer(addPlayerCommand);
     }
 
     public void selectByCallback(AddPlayerCommand addPlayerCommand) {
@@ -86,7 +86,7 @@ public class GameModel {
         Game gameSelected = Configuration.getSingleton().getGameSelected();
         FlagAsReadyCommand flagAsReadyCommand = new FlagAsReadyCommand(player, gameSelected);
 
-        mainCommandTemplate.flagAsReady(flagAsReadyCommand);
+        commandTemplateFactory.getMain().flagAsReady(flagAsReadyCommand);
     }
 
     public void flagAsReadyByCallback(FlagAsReadyCommand flagAsReadyCommand) {

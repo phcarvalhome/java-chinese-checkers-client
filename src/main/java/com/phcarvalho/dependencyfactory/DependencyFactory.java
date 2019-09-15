@@ -2,13 +2,11 @@ package com.phcarvalho.dependencyfactory;
 
 import com.phcarvalho.controller.*;
 import com.phcarvalho.model.*;
-import com.phcarvalho.model.communication.commandtemplate.IBoardCommandTemplate;
-import com.phcarvalho.model.communication.commandtemplate.IChatCommandTemplate;
-import com.phcarvalho.model.communication.commandtemplate.IMainCommandTemplate;
 import com.phcarvalho.model.communication.commandtemplate.local.socket.CommandInvoker;
-import com.phcarvalho.model.communication.strategy.ICommandTemplateStrategy;
+import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
-import com.phcarvalho.model.communication.strategy.factory.ICommunicationStrategyFactory;
+import com.phcarvalho.model.communication.strategy.factory.ICommunicationStrategy;
+import com.phcarvalho.model.communication.strategy.socket.SocketConnectionStrategy;
 import com.phcarvalho.model.configuration.startingposition.registry.StartingPositionConfigurationRegistry;
 import com.phcarvalho.view.*;
 import com.phcarvalho.view.datatransfer.BoardPositionTransferHandler;
@@ -29,7 +27,7 @@ public class DependencyFactory {
         return singleton;
     }
 
-    private ICommunicationStrategyFactory communicationStrategyFactory;
+    private ICommunicationStrategy communicationStrategyFactory;
     private Map<Class<?>, Object> dependencyMap;
 
     private DependencyFactory() {
@@ -39,13 +37,15 @@ public class DependencyFactory {
     public void build(){
         dependencyMap.put(DialogUtil.class, new DialogUtil());
         dependencyMap.put(CommandInvoker.class, new CommandInvoker());
+        dependencyMap.put(SocketConnectionStrategy.class, new SocketConnectionStrategy());
         dependencyMap.put(IConnectionStrategy.class, communicationStrategyFactory.buildConnectionStrategy());
-        dependencyMap.put(ICommandTemplateStrategy.class, communicationStrategyFactory.buildCommandTemplateStrategy());
+        dependencyMap.put(ICommandTemplateFactory.class, communicationStrategyFactory.buildCommandTemplateFactory());
         dependencyMap.put(StartingPositionConfigurationRegistry.class, new StartingPositionConfigurationRegistry());
 
-        dependencyMap.put(IBoardCommandTemplate.class, get(ICommandTemplateStrategy.class).getCommandTemplateSet().getBoardCommandTemplate());
-        dependencyMap.put(IChatCommandTemplate.class, get(ICommandTemplateStrategy.class).getCommandTemplateSet().getChatCommandTemplate());
-        dependencyMap.put(IMainCommandTemplate.class, get(ICommandTemplateStrategy.class).getCommandTemplateSet().getMainCommandTemplate());
+//        dependencyMap.put(IConnectionCommandTemplate.class, get(ICommandTemplateFactory.class).getConnection());
+//        dependencyMap.put(IBoardCommandTemplate.class, get(ICommandTemplateFactory.class).getBoard());
+//        dependencyMap.put(IChatCommandTemplate.class, get(ICommandTemplateFactory.class).getChat());
+//        dependencyMap.put(IMainCommandTemplate.class, get(ICommandTemplateFactory.class).getMain());
 
         buildBoardMVC();
         buildConnectedPlayerMVC();
@@ -55,7 +55,7 @@ public class DependencyFactory {
         buildMainMVC();
 
         get(CommandInvoker.class).buildCommandObserverMap();
-        get(IConnectionStrategy.class).setCommandInvoker(get(CommandInvoker.class));
+//        get(IConnectionStrategy.class).setCommandInvoker(get(CommandInvoker.class));
 
         dependencyMap.put(BoardPositionTransferHandler.class, new BoardPositionTransferHandler());
     }
@@ -135,20 +135,20 @@ public class DependencyFactory {
         get(GameView.class).setMainView(mainView);
         get(ConnectionView.class).setMainView(mainView);
         get(ChatView.class).setMainView(mainView);
-        get(IConnectionStrategy.class).setMainModel(mainModel);
+//        get(IConnectionStrategy.class).setMainModel(mainModel);
         //TODO talvez fazer o set de cada model que foi colocado lá...
     }
 
-    public <T> T get(Class<T> type){
-        Object dependency = dependencyMap.get(type);
+    public <T> T get(Class<T> classType){
+        Object dependency = dependencyMap.get(classType);
 
         if(dependency == null)
-            throw new RuntimeException("The dependency is null! Type: " + type);
+            throw new RuntimeException("The dependency is null! Type: " + classType);
 
         return (T) dependency;
     }
 
-    public void setCommunicationStrategyFactory(ICommunicationStrategyFactory communicationStrategyFactory) {
+    public void setCommunicationStrategyFactory(ICommunicationStrategy communicationStrategyFactory) {
         this.communicationStrategyFactory = communicationStrategyFactory;
     }
 }

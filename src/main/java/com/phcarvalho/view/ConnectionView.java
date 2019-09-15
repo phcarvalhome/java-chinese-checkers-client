@@ -2,18 +2,20 @@ package com.phcarvalho.view;
 
 import com.phcarvalho.controller.ConnectionController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
+import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.view.util.DialogUtil;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Random;
 
 public class ConnectionView extends JPanel {
 
-    private static final String DEFAULT_HOST = "localhost";
     private static final int DEFAULT_PORT = 9999;
     private static final String DEFAULT_USER_NAME = "Player ";
     private static final String CONNECT_TO_SERVER = "Connect To Server";
@@ -107,7 +109,10 @@ public class ConnectionView extends JPanel {
                 if(userName != null) {
 
                     try {
-                        controller.connectToServer(host, port, userName);
+                        User localUser = buildLocalUser(userName);
+                        User remoteUser = User.ofServer(host, port);
+
+                        controller.connectToServer(localUser, remoteUser);
                     } catch (RemoteException e) {
                         dialogUtil.showError(e.getMessage(), CONNECT_TO_SERVER, e);
                     }
@@ -123,7 +128,7 @@ public class ConnectionView extends JPanel {
             return null;
 
         if(userName.isEmpty())
-            return DEFAULT_HOST;
+            return getLocalhost();
 
         return userName;
     }
@@ -158,10 +163,32 @@ public class ConnectionView extends JPanel {
         return userName;
     }
 
-    public void connectToServerByCallback(User localUser) {
+    private User buildLocalUser(String userName) {
+        String host = getLocalhost();
+
+        return User.of(userName, host, null);
+    }
+
+    private String getLocalhost() {
+        InetAddress inetAddress = null;
+
+        try {
+            inetAddress = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            //todo handle it...
+            e.printStackTrace();
+        }
+
+        return inetAddress.getHostAddress();
+    }
+
+    public void connectToServerByCallback() {
+        User localUser = Configuration.getSingleton().getLocalUser();
+        User remoteUser = Configuration.getSingleton().getRemoteUser();
+
         userNameValueLabel.setText(localUser.getName());
-        localHostValueLabel.setText(localUser.getHost());
-        localPortValueLabel.setText(localUser.getPort().toString());
+        localHostValueLabel.setText(remoteUser.getHost());
+        localPortValueLabel.setText(remoteUser.getPort().toString());
         connectToServerButton.setEnabled(false);
         mainView.getGameView().getAddGameButton().setEnabled(true);
         mainView.getGameView().getSelectGameButton().setEnabled(true);

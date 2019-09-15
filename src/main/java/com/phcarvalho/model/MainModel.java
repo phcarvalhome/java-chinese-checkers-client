@@ -23,8 +23,4 @@ public class MainModel {
         gameModel.clear();
         connectedPlayerModel.clear();
     }
-
-    public void connectToServerByCallback(User localUser) {
-        connectionModel.connectToServerByCallback(localUser);
-    }
 }

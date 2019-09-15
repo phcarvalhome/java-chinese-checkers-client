@@ -1,11 +1,11 @@
 package com.phcarvalho.model.communication.strategy.factory;
 
-import com.phcarvalho.model.communication.strategy.ICommandTemplateStrategy;
+import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
-import com.phcarvalho.model.communication.strategy.socket.SocketCommandTemplateStrategy;
+import com.phcarvalho.model.communication.strategy.socket.SocketCommandTemplateFactory;
 import com.phcarvalho.model.communication.strategy.socket.SocketConnectionStrategy;
 
-public class SocketStrategyFactory implements ICommunicationStrategyFactory {
+public class SocketStrategy implements ICommunicationStrategy {
 
     @Override
     public IConnectionStrategy buildConnectionStrategy() {
@@ -13,7 +13,7 @@ public class SocketStrategyFactory implements ICommunicationStrategyFactory {
     }
 
     @Override
-    public ICommandTemplateStrategy buildCommandTemplateStrategy() {
-        return new SocketCommandTemplateStrategy();
+    public ICommandTemplateFactory buildCommandTemplateFactory() {
+        return new SocketCommandTemplateFactory();
     }
 }

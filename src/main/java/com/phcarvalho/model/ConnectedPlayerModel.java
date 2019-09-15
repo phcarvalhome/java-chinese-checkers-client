@@ -2,7 +2,7 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.ConnectedPlayerController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.communication.commandtemplate.IMainCommandTemplate;
+import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.vo.Player;
 
 import javax.swing.*;
@@ -10,12 +10,10 @@ import javax.swing.*;
 public class ConnectedPlayerModel {
 
     private ConnectedPlayerController controller;
-    private IMainCommandTemplate mainCommandTemplate;
     private DefaultListModel<Player> list;
 
     public ConnectedPlayerModel(ConnectedPlayerController controller) {
         this.controller = controller;
-        mainCommandTemplate = DependencyFactory.getSingleton().get(IMainCommandTemplate.class);
         list = new DefaultListModel();
     }
 

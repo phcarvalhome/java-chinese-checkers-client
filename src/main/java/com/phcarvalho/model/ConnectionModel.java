@@ -2,6 +2,8 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.ConnectionController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
+import com.phcarvalho.model.communication.protocol.vo.command.ConnectCommand;
+import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.communication.strategy.IConnectionStrategy;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.User;
@@ -11,23 +13,25 @@ import java.rmi.RemoteException;
 public class ConnectionModel {
 
     private ConnectionController controller;
-    private IConnectionStrategy connectionHandlerStrategy;
+    private IConnectionStrategy connectionStrategy;
+    private ICommandTemplateFactory commandTemplateFactory;
 
     public ConnectionModel(ConnectionController controller) {
         this.controller = controller;
-        connectionHandlerStrategy = DependencyFactory.getSingleton().get(IConnectionStrategy.class);
+        connectionStrategy = DependencyFactory.getSingleton().get(IConnectionStrategy.class);
+        commandTemplateFactory = DependencyFactory.getSingleton().get(ICommandTemplateFactory.class);
     }
 
-    public void connectToServer(String host, Integer port, String userName) throws RemoteException {
-//        User localUser = User.of(userName, host, port); TODO pegar o ip...
+    public void connectToServer(User localUser, User remoteUser) throws RemoteException {
         Configuration.getSingleton().setLocalUser(localUser);
-        connectionHandlerStrategy.connectToServer(host, port, userName);
+        Configuration.getSingleton().setRemoteUser(remoteUser);
+        connectionStrategy.connectToServer(remoteUser);
+        commandTemplateFactory.getConnection().connect(new ConnectCommand(remoteUser));
     }
 
-    public void connectToServerByCallback(User localUser) {
+    public void connectToServerByCallback(ConnectCommand connectCommand) {
         Configuration.getSingleton().setServerConnected(true);
-//        Configuration.getSingleton().setLocalUser(localUser);
-        controller.connectToServerByCallback(localUser);
+        controller.connectToServerByCallback();
     }
 
     public void clear() {

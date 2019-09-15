@@ -7,7 +7,7 @@ import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IMainCommandTemplate extends Remote {
+public interface IMainCommandTemplate extends ICommandTemplate {
 
     void addGame(AddGameCommand addGameCommand) throws RemoteException;
 
