@@ -16,7 +16,6 @@ public class ConnectedPlayerView extends JPanel {
     private static final String EMPTY_LABEL = "-";
     private static final int WIDTH = 280;
     private static final int HEIGHT = 120;
-    private static final String READY_SYMBOL = "[>>>] ";
 
     private ConnectedPlayerController controller;
     private MainView mainView;
@@ -87,19 +86,24 @@ public class ConnectedPlayerView extends JPanel {
     }
 
     public void setReadyPlayer(Player readyPlayer) {
-        int readyPlayerIndex = controller.getPlayerIndex(readyPlayer);
-        Player player = list.getModel().getElementAt(readyPlayerIndex);
-        player.getUser().setName(READY_SYMBOL + player.getUser().getName());
-
-        list.repaint();
+//        int readyPlayerIndex = controller.getPlayerIndex(readyPlayer);
+//        Player player = list.getModel().getElementAt(readyPlayerIndex);
+//
+//        player.getUser().setName(READY_SYMBOL + player.getUser().getName());
+//        list.repaint();
     }
 
     public void removeByCallback(Player player) {
         String message = String.join("",
-                "The player ", player.getUser().getName(), " is out the game!");
+                "The player ", player.getUser().getName(), " is DISCONNECTED!");
 
 //        list.repaint();
         mainView.getChatView().displaySystemMessage(message);
+    }
+
+    public void reset() {
+        controller.clear();
+        turnPlayerValueLabel.setText(EMPTY_LABEL);
     }
 
     public void setMainView(MainView mainView) {

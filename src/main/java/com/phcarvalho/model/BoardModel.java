@@ -5,6 +5,7 @@ import com.phcarvalho.dependencyfactory.DependencyFactory;
 import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.MovePieceCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.NotifyVictoryCommand;
+import com.phcarvalho.model.communication.protocol.vo.command.NotifyWithdrawalCommand;
 import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.builder.vo.BoardRowConfiguration;
@@ -30,17 +31,18 @@ public class BoardModel {
 
     public void movePiece(Position sourcePosition, Position targetPosition, Piece piece) {
         boolean goal = isGoal(piece.getPlayer());
+        Game gameSelected = Configuration.getSingleton().getGameSelected();
 
         if(goal){
+            Player player = Configuration.getSingleton().getPlayer();
+
             try {
-                commandTemplateFactory.getBoard().notifyVictory(new NotifyVictoryCommand());
+                commandTemplateFactory.getBoard().notifyVictory(new NotifyVictoryCommand(gameSelected.getId(), player));
             } catch (RemoteException e) {
                 e.printStackTrace();
                 //TODO add handling...
             }
-        }
-        else{
-            Game gameSelected = Configuration.getSingleton().getGameSelected();
+        } else{
 
             try {
                 commandTemplateFactory.getBoard()
@@ -100,6 +102,20 @@ public class BoardModel {
         return goalPositionCounter;
     }
 
+    public void notifyVictoryByCallback(NotifyVictoryCommand notifyVictoryCommand) {
+        Configuration.getSingleton().removeGameSelectedAndPlayer();
+        controller.notifyVictoryByCallback(notifyVictoryCommand);
+    }
+
+    public void notifyWithdrawalByCallback(NotifyWithdrawalCommand notifyWithdrawalCommand) {
+        User localUser = Configuration.getSingleton().getLocalUser();
+
+        if(localUser.equals(notifyWithdrawalCommand.getPlayer().getUser()))
+            Configuration.getSingleton().removeGameSelectedAndPlayer();
+
+        controller.notifyWithdrawalByCallback(notifyWithdrawalCommand);
+    }
+
     public void clearPosition(Position position) {
         controller.clearPosition(position);
     }
@@ -110,14 +126,6 @@ public class BoardModel {
         Player player = addPlayerCommand.getPlayer();
 
         if((gameSelected != null) && (gameSelected.getId().equals(gameId)))
-            removePlayer(player);
-    }
-
-    private void removePlayer(Player player) {
-        controller.getPositionViewMap().values()
-                .stream()
-                .filter(boardPositionView -> boardPositionView.isNotEmpty())
-                .filter(boardPositionView -> boardPositionView.getPiece().getPlayer().equals(player))
-                .forEach(boardPositionView -> clearPosition(boardPositionView.getPosition()));
+            controller.removePlayer(player);
     }
 }

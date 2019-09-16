@@ -2,6 +2,8 @@ package com.phcarvalho.controller;
 
 import com.phcarvalho.dependencyfactory.DependencyFactory;
 import com.phcarvalho.model.BoardModel;
+import com.phcarvalho.model.communication.protocol.vo.command.NotifyVictoryCommand;
+import com.phcarvalho.model.communication.protocol.vo.command.NotifyWithdrawalCommand;
 import com.phcarvalho.model.configuration.startingposition.IStartingPositionConfiguration;
 import com.phcarvalho.model.configuration.startingposition.registry.StartingPositionConfigurationRegistry;
 import com.phcarvalho.model.vo.Piece;
@@ -13,8 +15,8 @@ import com.phcarvalho.view.BoardView;
 import java.util.Map;
 
 public class BoardController {
-
     private BoardView view;
+
     private BoardModel model;
 
     public BoardController() {
@@ -29,6 +31,14 @@ public class BoardController {
                         .forEach(position -> view.getBoardPositionView(position).setPiece(new Piece(player))));
     }
 
+    public void notifyVictoryByCallback(NotifyVictoryCommand notifyVictoryCommand) {
+        view.notifyVictoryByCallback(notifyVictoryCommand);
+    }
+
+    public void notifyWithdrawalByCallback(NotifyWithdrawalCommand notifyWithdrawalCommand) {
+        view.notifyWithdrawalByCallback(notifyWithdrawalCommand);
+    }
+
     public void clearPosition(Position position) {
         view.clearPosition(position);
     }
@@ -41,8 +51,8 @@ public class BoardController {
         return view.getBoardPositionView(position);
     }
 
-    public Map<Position, BoardPositionView> getPositionViewMap() {
-        return view.getPositionViewMap();
+    public void removePlayer(Player player) {
+        view.removePlayer(player);
     }
 
     public void setView(BoardView view) {

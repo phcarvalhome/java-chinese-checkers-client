@@ -53,6 +53,11 @@ public class Configuration {
         this.player = player;
     }
 
+    public void removeGameSelectedAndPlayer(){
+        this.gameSelected = gameSelected;
+        this.player = player;
+    }
+
     public Player getPlayer() {
 
         if(player == null)

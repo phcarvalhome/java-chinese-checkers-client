@@ -29,6 +29,10 @@ public class ConnectedPlayerController {
         return model.getPlayerIndex(player);
     }
 
+    public void clear() {
+        model.clear();
+    }
+
     public void setView(ConnectedPlayerView view) {
         this.view = view;
     }

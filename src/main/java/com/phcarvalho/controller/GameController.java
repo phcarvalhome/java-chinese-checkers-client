@@ -4,6 +4,7 @@ import com.phcarvalho.model.GameModel;
 import com.phcarvalho.model.communication.protocol.vo.command.AddGameCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand;
+import com.phcarvalho.model.communication.protocol.vo.command.NotifyWithdrawalCommand;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.GameView;
@@ -48,6 +49,14 @@ public class GameController {
 
     public void flagAsReadyByCallback(FlagAsReadyCommand flagAsReadyCommand) {
         view.flagAsReadyByCallback(flagAsReadyCommand);
+    }
+
+    public void giveUp() throws RemoteException {
+        model.giveUp();
+    }
+
+    public void clear() {
+        model.clear();
     }
 
     public void setView(GameView view) {

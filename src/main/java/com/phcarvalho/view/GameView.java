@@ -5,10 +5,12 @@ import com.phcarvalho.dependencyfactory.DependencyFactory;
 import com.phcarvalho.model.communication.protocol.vo.command.AddGameCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand;
+import com.phcarvalho.model.communication.protocol.vo.command.NotifyWithdrawalCommand;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.Game;
 import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.model.configuration.startingposition.vo.StartingPositionEnum;
+import com.phcarvalho.model.vo.GameStatusEnum;
 import com.phcarvalho.model.vo.PieceColorEnum;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.util.DialogUtil;
@@ -26,6 +28,7 @@ public class GameView extends JPanel {
     private static final String ADD_GAME = "Add Game";
     private static final String SELECT_GAME = "Select Game";
     private static final String FLAG_AS_READY = "Flag as Ready";
+    private static final String GIVE_UP = "Give Up";
     private static final String EMPTY_LABEL = "-";
     private static final String SELECT_PIECE_COLOR = "Select Piece Color";
     private static final String SELECT_STARTING_POSITION = "Select Starting Position";
@@ -34,7 +37,6 @@ public class GameView extends JPanel {
 
     private GameController controller;
     private MainView mainView;
-    private DialogUtil dialogUtil;
     private JList<Game> list;
     private JPanel topPanel;
     private JPanel bottomPanel;
@@ -43,13 +45,15 @@ public class GameView extends JPanel {
     private JLabel selectedGameLabel;
     private JLabel selectedGameValueLabel;
     private JButton flagAsReadyButton;
+    private JButton giveUpButton;
     private JLabel gameStatusLabel;
     private JLabel gameStatusValueLabel;
+
+    private DialogUtil dialogUtil;
 
     public GameView(GameController controller) {
         super(new GridBagLayout());
         this.controller = controller;
-        dialogUtil = DependencyFactory.getSingleton().get(DialogUtil.class);
         list = new JList();
         topPanel = new JPanel(new GridBagLayout());
         bottomPanel = new JPanel(new GridBagLayout());
@@ -58,8 +62,10 @@ public class GameView extends JPanel {
         selectedGameLabel = new JLabel("Selected game:");
         selectedGameValueLabel = new JLabel(EMPTY_LABEL);
         flagAsReadyButton = new JButton(FLAG_AS_READY);
+        giveUpButton = new JButton(GIVE_UP);
         gameStatusLabel = new JLabel("Status:");
-        gameStatusValueLabel = new JLabel(EMPTY_LABEL);
+        gameStatusValueLabel = new JLabel(GameStatusEnum.NOT_SELECTED.getValue());
+        dialogUtil = DependencyFactory.getSingleton().get(DialogUtil.class);
         initialize();
     }
 
@@ -132,6 +138,14 @@ public class GameView extends JPanel {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.insets = new Insets(2, 4, 2, 4);
         bottomPanel.add(flagAsReadyButton, gridBagConstraints);
+
+        giveUpButton.setEnabled(false);
+        giveUpButton.addActionListener(actionEvent -> giveUp());
+        giveUpButton.setPreferredSize(new Dimension(120, 30));
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new Insets(2, 4, 2, 4);
+        bottomPanel.add(giveUpButton, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -229,12 +243,13 @@ public class GameView extends JPanel {
                 addGameButton.setEnabled(false);
                 selectGameButton.setEnabled(false);
                 selectedGameValueLabel.setText(gameSelected.getTitle());
+                gameStatusValueLabel.setText(GameStatusEnum.SELECTED.getValue());
             }
 
             mainView.getBoardView().addPlayer(ownerPlayer);
 
             String message = String.join("",
-                    "The player ", ownerPlayer.getUser().getName(), " is in the game!");
+                    "The player ", ownerPlayer.getUser().getName(), " is CONNECTED!");
 
             mainView.getChatView().displaySystemMessage(message);
         }
@@ -338,13 +353,14 @@ public class GameView extends JPanel {
             addGameButton.setEnabled(false);
             selectGameButton.setEnabled(false);
             selectedGameValueLabel.setText(game.getTitle());
+            gameStatusValueLabel.setText(GameStatusEnum.SELECTED.getValue());
         }
 
         mainView.getBoardView().addPlayer(player);
         mainView.getConnectedPlayerView().add(player);
 
         String message = String.join("",
-                "The player ", player.getUser().getName(), " is in the game!");
+                "The player ", player.getUser().getName(), " is CONNECTED!");
 
         mainView.getChatView().displaySystemMessage(message);
     }
@@ -358,29 +374,61 @@ public class GameView extends JPanel {
             //TODO add handling...
         }
 
-        flagAsReadyButton.setEnabled(false);
         addGameButton.setEnabled(false);
         selectGameButton.setEnabled(false);
+        flagAsReadyButton.setEnabled(false);
     }
 
     public void flagAsReadyByCallback(FlagAsReadyCommand flagAsReadyCommand) {
+        mainView.getConnectedPlayerView().setReadyPlayer(flagAsReadyCommand.getPlayer());
 
         if(flagAsReadyCommand.getGame().isGameStarted()){
-            String message = "The game is started!";
+            String message = "The game is STARTED!";
 
-            gameStatusValueLabel.setText("Started");
-            dialogUtil.showInformation(message, FLAG_AS_READY);
+//            dialogUtil.showInformation(message, FLAG_AS_READY); //TODO tentar ajeitar isso
+            giveUpButton.setEnabled(true);
+            gameStatusValueLabel.setText(GameStatusEnum.STARTED.getValue());
             mainView.getConnectedPlayerView().setTurnPlayer(flagAsReadyCommand.getGame().getTurnPlayer());
-            mainView.getConnectedPlayerView().setReadyPlayer(flagAsReadyCommand.getPlayer());
             mainView.getChatView().displaySystemMessage(message);
         }else{
-            mainView.getConnectedPlayerView().setReadyPlayer(flagAsReadyCommand.getPlayer());
-
+            User user = flagAsReadyCommand.getPlayer().getUser();
             String message = String.join("",
-                    "The player ", flagAsReadyCommand.getPlayer().getUser().getName(), " is ready!");
+                    "The player ", user.getName(), " is READY!");
+            User localUser = Configuration.getSingleton().getLocalUser();
+
+            if(localUser.equals(user))
+                gameStatusValueLabel.setText(GameStatusEnum.READY.getValue());
 
             mainView.getChatView().displaySystemMessage(message);
         }
+    }
+
+    public void enableGiveUp() {
+        giveUpButton.setEnabled(true);
+    }
+
+    private void giveUp() {
+
+        try {
+            controller.giveUp();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            //TODO add handling...
+        }
+
+//        addGameButton.setEnabled(false);
+//        selectGameButton.setEnabled(false);
+//        flagAsReadyButton.setEnabled(false);
+    }
+
+    public void reset() {
+//        controller.clear();
+        addGameButton.setEnabled(true);
+        selectGameButton.setEnabled(true);
+        flagAsReadyButton.setEnabled(false);
+        giveUpButton.setEnabled(false);
+        selectedGameValueLabel.setText(EMPTY_LABEL);
+        gameStatusValueLabel.setText(GameStatusEnum.NOT_SELECTED.getValue());
     }
 
     public void setMainView(MainView mainView) {

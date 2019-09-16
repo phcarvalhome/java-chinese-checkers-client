@@ -45,10 +45,12 @@ public class ConnectionModel {
 
     public void disconnect() throws RemoteException {
         Game gameSelected = Configuration.getSingleton().getGameSelected();
-        Player player = Configuration.getSingleton().getPlayer();
 
-        if(gameSelected != null)
+        if(gameSelected != null){
+            Player player = Configuration.getSingleton().getPlayer();
+
             commandTemplateFactory.getMain().addPlayer(new AddPlayerCommand(player, gameSelected, true));
+        }
 //        else
 //        commandTemplateFactory.getConnection().disconnect(new DisconnectCommand()); //TODO precisa disso mesmo aqui (disconnect por fechar frame do jogo)...
     }

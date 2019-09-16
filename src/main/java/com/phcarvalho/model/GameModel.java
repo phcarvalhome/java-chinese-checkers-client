@@ -2,9 +2,7 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.GameController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.communication.protocol.vo.command.AddGameCommand;
-import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
-import com.phcarvalho.model.communication.protocol.vo.command.FlagAsReadyCommand;
+import com.phcarvalho.model.communication.protocol.vo.command.*;
 import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.Game;
@@ -120,6 +118,14 @@ public class GameModel {
 
             localGame.setGameStarted(true);
         }
+    }
+
+    public void giveUp() throws RemoteException {
+        Player player = Configuration.getSingleton().getPlayer();
+        Game gameSelected = Configuration.getSingleton().getGameSelected();
+        NotifyWithdrawalCommand notifyWithdrawalCommand = new NotifyWithdrawalCommand(gameSelected.getId(), player);
+
+        commandTemplateFactory.getBoard().notifyWithdrawal(notifyWithdrawalCommand);
     }
 
     public void clear() {

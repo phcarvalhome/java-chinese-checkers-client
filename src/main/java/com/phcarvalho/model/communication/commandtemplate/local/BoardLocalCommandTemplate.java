@@ -21,12 +21,12 @@ public class BoardLocalCommandTemplate extends UnicastRemoteObject implements IB
 
     @Override
     public void notifyVictory(NotifyVictoryCommand notifyVictoryCommand) throws RemoteException {
-
+        gameModel.notifyVictoryByCallback(notifyVictoryCommand);
     }
 
     @Override
     public void notifyWithdrawal(NotifyWithdrawalCommand notifyWithdrawalCommand) throws RemoteException {
-
+        gameModel.notifyWithdrawalByCallback(notifyWithdrawalCommand);
     }
 
     @Override
