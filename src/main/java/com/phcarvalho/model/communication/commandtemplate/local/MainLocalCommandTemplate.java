@@ -26,7 +26,7 @@ public class MainLocalCommandTemplate extends UnicastRemoteObject implements IMa
 
     @Override
     public void addPlayer(AddPlayerCommand addPlayerCommand) throws RemoteException {
-        gameModel.selectByCallback(addPlayerCommand);
+        gameModel.addOrRemovePlayerByCallback(addPlayerCommand);
     }
 
     @Override

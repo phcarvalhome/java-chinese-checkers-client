@@ -2,6 +2,7 @@ package com.phcarvalho.view;
 
 import com.phcarvalho.controller.ConnectedPlayerController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
+import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.util.DialogUtil;
 
@@ -15,7 +16,7 @@ public class ConnectedPlayerView extends JPanel {
     private static final String EMPTY_LABEL = "-";
     private static final int WIDTH = 280;
     private static final int HEIGHT = 120;
-    private static final String READY_SYMBOL = ">>>";
+    private static final String READY_SYMBOL = "[>>>] ";
 
     private ConnectedPlayerController controller;
     private MainView mainView;
@@ -88,10 +89,17 @@ public class ConnectedPlayerView extends JPanel {
     public void setReadyPlayer(Player readyPlayer) {
         int readyPlayerIndex = controller.getPlayerIndex(readyPlayer);
         Player player = list.getModel().getElementAt(readyPlayerIndex);
-        player.getUser().setName(READY_SYMBOL + " " + player.getUser().getName());
+        player.getUser().setName(READY_SYMBOL + player.getUser().getName());
 
-//        list.revalidate();
         list.repaint();
+    }
+
+    public void removeByCallback(Player player) {
+        String message = String.join("",
+                "The player ", player.getUser().getName(), " is out the game!");
+
+//        list.repaint();
+        mainView.getChatView().displaySystemMessage(message);
     }
 
     public void setMainView(MainView mainView) {

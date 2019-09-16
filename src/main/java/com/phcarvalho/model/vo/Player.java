@@ -45,6 +45,6 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return user.getName() + " [" + color.getValue() + "][" + startingPosition.getValue() + "]";
+        return "[" + color.getValue() + "][" + startingPosition.getValue() + "] " + user.getName();
     }
 }

@@ -8,10 +8,16 @@ public class AddPlayerCommand extends AbstractCommand {
 
     private Player player;
     private Game game;
+    private boolean delete;
 
     public AddPlayerCommand(Player player, Game game) {
+        this(player, game, false);
+    }
+
+    public AddPlayerCommand(Player player, Game game, boolean delete) {
         this.player = player;
         this.game = game;
+        this.delete = delete;
     }
 
     @Override
@@ -27,11 +33,16 @@ public class AddPlayerCommand extends AbstractCommand {
         return game;
     }
 
+    public boolean isDelete() {
+        return delete;
+    }
+
     @Override
     public String toString() {
         return "AddPlayerCommand{" +
                 "player=" + player +
                 ", game=" + game +
+                ", delete=" + delete +
                 '}';
     }
 }

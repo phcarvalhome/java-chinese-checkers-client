@@ -7,19 +7,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-public class BoardPositionListener extends MouseAdapter {
+public class BoardPositionMouseAdapter extends MouseAdapter {
 
-    private static BoardPositionListener singleton;
+    private static BoardPositionMouseAdapter singleton;
 
-    public static BoardPositionListener getSingleton(){
+    public static BoardPositionMouseAdapter getSingleton(){
 
         if(singleton == null)
-            singleton = new BoardPositionListener();
+            singleton = new BoardPositionMouseAdapter();
 
         return singleton;
     }
 
-    private BoardPositionListener() {
+    private BoardPositionMouseAdapter() {
     }
 
     @Override

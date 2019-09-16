@@ -2,6 +2,7 @@ package com.phcarvalho.view;
 
 import com.phcarvalho.controller.MainController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
+import com.phcarvalho.view.listener.MainWindowAdapter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,6 +89,7 @@ public class MainView extends JFrame {
 //        gridBagConstraints.gridy = 0;
 //        bottomRightPanel.add(connectionView, gridBagConstraints);
 
+        addWindowListener(new MainWindowAdapter(() -> disconnect()));
         setTitle(TITLE);
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,6 +97,10 @@ public class MainView extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
+    }
+
+    private void disconnect() {
+        connectionView.disconnect();
     }
 
     public BoardView getBoardView() {

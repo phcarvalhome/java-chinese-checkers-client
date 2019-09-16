@@ -35,12 +35,12 @@ public class Configuration {
         gameMap.put(game.getId(), game);
     }
 
-    public Game getGame(Integer gameId){
-        return gameMap.get(gameId);
+    public void removeGame(Integer gameId){
+        gameMap.remove(gameId);
     }
 
-    public void removeGame(Game game){
-        gameMap.remove(game.getId());
+    public Game getGame(Integer gameId){
+        return gameMap.get(gameId);
     }
 
     public void clear(){

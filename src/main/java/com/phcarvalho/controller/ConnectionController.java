@@ -1,6 +1,7 @@
 package com.phcarvalho.controller;
 
 import com.phcarvalho.model.ConnectionModel;
+import com.phcarvalho.model.communication.protocol.vo.command.DisconnectCommand;
 import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.view.ConnectionView;
 
@@ -20,6 +21,14 @@ public class ConnectionController {
 
     public void connectToServerByCallback() {
         view.connectToServerByCallback();
+    }
+
+    public void disconnect() throws RemoteException {
+        model.disconnect();
+    }
+
+    public void disconnectByCallback(DisconnectCommand disconnectCommand) {
+        view.disconnectByCallback(disconnectCommand);
     }
 
     public void clear() {

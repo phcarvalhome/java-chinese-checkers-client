@@ -10,6 +10,8 @@ import com.phcarvalho.model.vo.Position;
 import com.phcarvalho.view.BoardPositionView;
 import com.phcarvalho.view.BoardView;
 
+import java.util.Map;
+
 public class BoardController {
 
     private BoardView view;
@@ -37,6 +39,10 @@ public class BoardController {
 
     public BoardPositionView getBoardPositionView(Position position) {
         return view.getBoardPositionView(position);
+    }
+
+    public Map<Position, BoardPositionView> getPositionViewMap() {
+        return view.getPositionViewMap();
     }
 
     public void setView(BoardView view) {

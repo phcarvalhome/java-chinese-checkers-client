@@ -8,6 +8,10 @@ public class AddGameCommand extends AbstractCommand {
     private Game game;
     private boolean delete;
 
+    public AddGameCommand(Game game) {
+        this(game, false);
+    }
+
     public AddGameCommand(Game game, boolean delete) {
         this.game = game;
         this.delete = delete;

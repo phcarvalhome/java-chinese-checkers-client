@@ -7,7 +7,7 @@ import com.phcarvalho.model.vo.BoardPositionIconEnum;
 import com.phcarvalho.model.vo.Piece;
 import com.phcarvalho.model.vo.Position;
 import com.phcarvalho.view.datatransfer.BoardPositionTransferHandler;
-import com.phcarvalho.view.listener.BoardPositionListener;
+import com.phcarvalho.view.listener.BoardPositionMouseAdapter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ public class BoardPositionView extends JButton {
         setPreferredSize(new Dimension(SIZE_WIDTH, SIZE_HEIGHT));
         setBorder(BorderFactory.createEmptyBorder());
         setTransferHandler(boardPositionTransferHandler);
-        addMouseMotionListener(BoardPositionListener.getSingleton());
+        addMouseMotionListener(BoardPositionMouseAdapter.getSingleton());
     }
 
     private void setInitialIcon() {

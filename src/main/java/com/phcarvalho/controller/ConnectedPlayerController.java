@@ -1,6 +1,7 @@
 package com.phcarvalho.controller;
 
 import com.phcarvalho.model.ConnectedPlayerModel;
+import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.view.ConnectedPlayerView;
 
@@ -18,6 +19,10 @@ public class ConnectedPlayerController {
 
     public void add(Player player) {
         model.add(player);
+    }
+
+    public void removeByCallback(Player player) {
+        view.removeByCallback(player);
     }
 
     public int getPlayerIndex(Player player) {

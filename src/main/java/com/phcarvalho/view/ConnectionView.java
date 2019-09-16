@@ -2,6 +2,7 @@ package com.phcarvalho.view;
 
 import com.phcarvalho.controller.ConnectionController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
+import com.phcarvalho.model.communication.protocol.vo.command.DisconnectCommand;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.view.util.DialogUtil;
@@ -196,6 +197,20 @@ public class ConnectionView extends JPanel {
 //        mainView.getChatView().getMessageTextField().setEnabled(true);
         mainView.getChatView().displaySystemMessage("The server is connected!");
 //        dialogUtil.showInformation("The server is connected!", SERVER_CONNECTION);
+    }
+
+    public void disconnect() {
+
+        try {
+            controller.disconnect();
+        } catch (RemoteException e) {
+            //TODO handle it
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnectByCallback(DisconnectCommand disconnectCommand) {
+        clear();
     }
 
     public void clear() {

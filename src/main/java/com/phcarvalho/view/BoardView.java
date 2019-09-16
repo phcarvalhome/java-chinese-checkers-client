@@ -77,4 +77,8 @@ public class BoardView extends JPanel {
     public void setMainView(MainView mainView) {
         this.mainView = mainView;
     }
+
+    public Map<Position, BoardPositionView> getPositionViewMap() {
+        return positionViewMap;
+    }
 }

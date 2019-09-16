@@ -42,11 +42,6 @@ public class DependencyFactory {
         dependencyMap.put(ICommandTemplateFactory.class, communicationStrategyFactory.buildCommandTemplateFactory());
         dependencyMap.put(StartingPositionConfigurationRegistry.class, new StartingPositionConfigurationRegistry());
 
-//        dependencyMap.put(IConnectionCommandTemplate.class, get(ICommandTemplateFactory.class).getConnection());
-//        dependencyMap.put(IBoardCommandTemplate.class, get(ICommandTemplateFactory.class).getBoard());
-//        dependencyMap.put(IChatCommandTemplate.class, get(ICommandTemplateFactory.class).getChat());
-//        dependencyMap.put(IMainCommandTemplate.class, get(ICommandTemplateFactory.class).getMain());
-
         buildBoardMVC();
         buildConnectedPlayerMVC();
         buildGameMVC();

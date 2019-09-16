@@ -37,6 +37,15 @@ public class Game implements Serializable {
         playerList.add(player);
     }
 
+    public void removeUser(User user){
+        List<User> userList = playerList.stream()
+                .map(player -> player.getUser())
+                .collect(Collectors.toList());
+        int index = userList.indexOf(user);
+
+        playerList.remove(index);
+    }
+
     public List<Player> getPlayerList(Player player) {
         return playerList.stream()
                 .filter(playerElement -> !playerElement.equals(player))
@@ -148,6 +157,6 @@ public class Game implements Serializable {
 
     @Override
     public String toString() {
-        return title + " [" + id + "]";
+        return "[" + id + "] " + title;
     }
 }

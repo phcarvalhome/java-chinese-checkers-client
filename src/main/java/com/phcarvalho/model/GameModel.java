@@ -18,11 +18,15 @@ public class GameModel {
 
     private GameController controller;
     private ICommandTemplateFactory commandTemplateFactory;
+    private ConnectedPlayerModel connectedPlayerModel;
+    private BoardModel boardModel;
     private DefaultListModel<Game> list;
 
     public GameModel(GameController controller) {
         this.controller = controller;
         commandTemplateFactory = DependencyFactory.getSingleton().get(ICommandTemplateFactory.class);
+        connectedPlayerModel = DependencyFactory.getSingleton().get(ConnectedPlayerModel.class);
+        boardModel = DependencyFactory.getSingleton().get(BoardModel.class);
         list = new DefaultListModel();
     }
 
@@ -41,7 +45,7 @@ public class GameModel {
         }
 
         if(addGameCommand.isDelete()){
-            Configuration.getSingleton().removeGame(game);
+            Configuration.getSingleton().removeGame(game.getId());
             list.removeElement(game);
         }else{
             Configuration.getSingleton().addGame(game);
@@ -54,11 +58,23 @@ public class GameModel {
         commandTemplateFactory.getMain().addPlayer(addPlayerCommand);
     }
 
-    public void selectByCallback(AddPlayerCommand addPlayerCommand) {
+    public void addOrRemovePlayerByCallback(AddPlayerCommand addPlayerCommand) {
+
+        if(addPlayerCommand.isDelete())
+            removePlayerByCallback(addPlayerCommand);
+        else
+            selectByCallback(addPlayerCommand);
+    }
+
+    private void removePlayerByCallback(AddPlayerCommand addPlayerCommand) {
+        connectedPlayerModel.removeByCallback(addPlayerCommand);
+        boardModel.removePlayerByCallback(addPlayerCommand);
+    }
+
+    private void selectByCallback(AddPlayerCommand addPlayerCommand) {
         User localUser = Configuration.getSingleton().getLocalUser();
         Player player = addPlayerCommand.getPlayer();
         Game remoteGame = addPlayerCommand.getGame();
-//        Configuration.getSingleton().addGame(remoteGame); //TODO é necessário?
         Game localGame = Configuration.getSingleton().getGame(remoteGame.getId());
 
         if(localUser.equals(player.getUser())){

@@ -2,19 +2,21 @@ package com.phcarvalho.model;
 
 import com.phcarvalho.controller.BoardController;
 import com.phcarvalho.dependencyfactory.DependencyFactory;
-import com.phcarvalho.model.communication.commandtemplate.IBoardCommandTemplate;
+import com.phcarvalho.model.communication.protocol.vo.command.AddPlayerCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.MovePieceCommand;
 import com.phcarvalho.model.communication.protocol.vo.command.NotifyVictoryCommand;
 import com.phcarvalho.model.communication.strategy.ICommandTemplateFactory;
 import com.phcarvalho.model.configuration.Configuration;
 import com.phcarvalho.model.configuration.builder.vo.BoardRowConfiguration;
 import com.phcarvalho.model.configuration.entity.Game;
+import com.phcarvalho.model.configuration.entity.User;
 import com.phcarvalho.model.configuration.startingposition.registry.StartingPositionConfigurationRegistry;
 import com.phcarvalho.model.configuration.startingposition.vo.StartingPositionEnum;
-import java.rmi.RemoteException;
 import com.phcarvalho.model.vo.Piece;
 import com.phcarvalho.model.vo.Player;
 import com.phcarvalho.model.vo.Position;
+
+import java.rmi.RemoteException;
 
 public class BoardModel {
 
@@ -100,5 +102,22 @@ public class BoardModel {
 
     public void clearPosition(Position position) {
         controller.clearPosition(position);
+    }
+
+    public void removePlayerByCallback(AddPlayerCommand addPlayerCommand) {
+        Game gameSelected = Configuration.getSingleton().getGameSelected();
+        Integer gameId = addPlayerCommand.getGame().getId();
+        Player player = addPlayerCommand.getPlayer();
+
+        if((gameSelected != null) && (gameSelected.getId().equals(gameId)))
+            removePlayer(player);
+    }
+
+    private void removePlayer(Player player) {
+        controller.getPositionViewMap().values()
+                .stream()
+                .filter(boardPositionView -> boardPositionView.isNotEmpty())
+                .filter(boardPositionView -> boardPositionView.getPiece().getPlayer().equals(player))
+                .forEach(boardPositionView -> clearPosition(boardPositionView.getPosition()));
     }
 }
