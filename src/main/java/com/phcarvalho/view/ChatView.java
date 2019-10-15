@@ -51,6 +51,7 @@ public class ChatView extends JPanel {
 
         scrollPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         add(scrollPane, gridBagConstraints);
+
         messageTextField.setEnabled(false);
         messageTextField.addKeyListener(new ChatTextPaneKeyListener(() -> displayMessage()));
         messageTextField.setPreferredSize(new Dimension(WIDTH, 30));

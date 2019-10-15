@@ -139,13 +139,13 @@ public class GameView extends JPanel {
         gridBagConstraints.insets = new Insets(2, 4, 2, 4);
         bottomPanel.add(flagAsReadyButton, gridBagConstraints);
 
-        giveUpButton.setEnabled(false);
-        giveUpButton.addActionListener(actionEvent -> giveUp());
-        giveUpButton.setPreferredSize(new Dimension(120, 30));
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new Insets(2, 4, 2, 4);
-        bottomPanel.add(giveUpButton, gridBagConstraints);
+//        giveUpButton.setEnabled(false);
+//        giveUpButton.addActionListener(actionEvent -> giveUp());
+//        giveUpButton.setPreferredSize(new Dimension(120, 30));
+//        gridBagConstraints.gridx = 1;
+//        gridBagConstraints.gridy = 2;
+//        gridBagConstraints.insets = new Insets(2, 4, 2, 4);
+//        bottomPanel.add(giveUpButton, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
