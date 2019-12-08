@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b56c8784-9bf3-4af8-8ac0-ae5d26fbd2fb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phcarvalho/view/ChatView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phcarvalho/view/ChatView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phcarvalho/view/GameView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phcarvalho/view/GameView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-chinese-checkers-client.iws" beforeDir="false" afterPath="$PROJECT_DIR$/java-chinese-checkers-client.iws" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -170,7 +169,12 @@
       <workItem from="1571018288981" duration="2201000" />
       <workItem from="1571021375673" duration="68000" />
       <workItem from="1571021458687" duration="1273000" />
-      <workItem from="1571102780721" duration="606000" />
+      <workItem from="1571102780721" duration="4559000" />
+      <workItem from="1571207724173" duration="2439000" />
+      <workItem from="1571233683258" duration="600000" />
+      <workItem from="1573485468042" duration="3218000" />
+      <workItem from="1575825687324" duration="3190000" />
+      <workItem from="1575829134724" duration="745000" />
     </task>
     <task id="LOCAL-00001" summary="Add first version">
       <created>1568008960900</created>
