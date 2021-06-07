@@ -9,12 +9,12 @@ Distributed Java application client using Sockets, RPC (RMI - Remote Method Invo
 ### Computer Engineering - Parallel and Distributed Programming 
 ### Project of Sockets/RMI
 
-- Objective: Implement Chinese Checkers Game
+- Objective: Implement Chinese Checkers Game.
 
 - Basic Features:
-  - Shift control, with definition of who starts the game
-  - Moving board pieces
-  - Dropout detection
-  - Restart game
-  - Chat for communication throughout the game
-  - Winner detection
+  - Shift control, with definition of who starts the game.
+  - Moving board pieces.
+  - Dropout detection.
+  - Restart game.
+  - Chat for communication throughout the game.
+  - Winner detection.
